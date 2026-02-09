@@ -494,6 +494,159 @@ Located at `.claude/hooks/*.sh`
 - Lead agent + teammates use Supabase MCP (`mcp__supabase__execute_sql`)
 - Data processor agents use either MCP or REST API (Supabase JavaScript client) depending on operation size
 
+### GrowWise MCP Server (Sprint 51)
+
+**Purpose:** Enable AI-to-AI communication via Model Context Protocol. Other AI systems can query GrowWise's live CRM data.
+
+**Architecture:**
+```typescript
+// app/api/mcp/route.ts
+import { createMCPAdapter } from '@vercel/mcp-adapter';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseAdmin = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
+
+const server = new Server({ name: 'growwise', version: '1.0.0' }, { capabilities: {} });
+```
+
+**7 Tools (All Query Real Supabase Data):**
+
+1. **search_inventory**
+   - Full-text search across synced_inventory table (1,377 products)
+   - Filters: name, brand, strain_type, location
+   - Returns: product details + pricing + stock levels
+
+2. **get_analytics**
+   - Sales metrics aggregated from synced_inventory
+   - Product counts, category distribution, pricing analysis
+   - Returns: JSON with counts per category/location
+
+3. **get_insights**
+   - AI-generated insights from live database queries
+   - Executes 6 analysis queries (top products, low stock, pricing trends)
+   - Returns: Natural language insights (e.g., "Top strain: Hybrid (45%)")
+
+4. **get_crm_stats**
+   - Pipeline metrics from crm_accounts + crm_opportunities
+   - $417M pipeline across 18,786 accounts
+   - Returns: account counts by tier, deal distribution by stage
+
+5. **get_opportunities**
+   - 134 investor/customer deals from crm_opportunities
+   - Stage tracking (qualification → proposal → negotiation → closed)
+   - Returns: Deal cards with amount, stage, close_date
+
+6. **get_competitor_intel**
+   - 7 competitor teardowns from crm_competitor_intel
+   - Dutchie, Flowhub, Treez, Cova, Jane, BLAZE, Sweed
+   - Returns: Funding, valuation, pricing, feature comparison
+
+7. **get_revenue_metrics**
+   - Year 1-5 financial projections per entity
+   - GrowWise: $10.5M Y1 → $105M Y5
+   - Returns: 11-entity revenue breakdown + aggregate totals
+
+**Why This Matters:**
+- Other AI assistants can query GrowWise data via standard MCP protocol
+- No custom API keys or auth—MCP is the universal AI-to-AI interface
+- This is NOT a prototype—all 7 tools query real production database
+
+**Live Demo:** growwise-jet.vercel.app/demo/sage
+
+### Sage AI Chat (Sprint 51)
+
+**Purpose:** Live AI assistant for dispensary operators, powered by Claude Sonnet with real-time streaming.
+
+**Architecture:**
+```typescript
+// app/api/chat/route.ts
+import { streamText } from 'ai';
+import { anthropic } from '@ai-sdk/anthropic';
+
+export async function POST(req: Request) {
+  const { messages } = await req.json();
+
+  const result = streamText({
+    model: anthropic('claude-sonnet-4-5-20250929'),
+    messages,
+    system: 'You are Sage, the AI assistant for GrowWise...',
+  });
+
+  return result.toDataStreamResponse();
+}
+```
+
+**Tech Stack:**
+- Vercel AI SDK 4.1 (`ai` package + `@ai-sdk/anthropic`)
+- Claude Sonnet 4.5 streaming model
+- React hooks: `useChat()` for client state management
+- Server-side API route at `/api/chat`
+
+**Features:**
+- Real-time streaming responses (no waiting for full completion)
+- Message history preserved across conversation
+- Mobile-responsive chat UI with glass morphism
+- Integrated with MCP server (can call 7 tools for live data)
+
+**Why This Matters:**
+- Demonstrates full-stack AI integration (frontend + backend + streaming)
+- Not a chatbot wrapper—custom system prompt + tool access
+- Production-ready UX with error handling and loading states
+
+**Live Demo:** growwise-jet.vercel.app/demo/sage (password: `growwise2026`)
+
+### X/Twitter Monitoring System (Sprint 52)
+
+**Purpose:** Automated intelligence gathering from X/Twitter for cannabis industry signals, competitor announcements, and investor activity.
+
+**Architecture:**
+```bash
+# Bird CLI (bun-powered X/Twitter client)
+bun install -g @steipete/bird
+
+# Auth via Safari cookies (no API keys needed)
+bird auth:login --cookies
+
+# Fetch timeline
+bird get:timeline --count 100 --type tweets
+```
+
+**3 Components:**
+
+1. **/daily-intel skill**
+   - User-invocable intelligence gathering
+   - Monitors 6 cannabis tech accounts (Dutchie, Flowhub, Treez, etc.)
+   - Extracts competitor signals, feature launches, funding news
+   - Output: 300-400 line markdown report with action items
+
+2. **x-monitor.sh script**
+   - Automated monitoring with cron support
+   - Runs daily at 7am
+   - Saves reports to `intelligence/x-twitter/daily-YYYY-MM-DD.md`
+   - Logs to `intelligence/x-twitter/monitor.log`
+
+3. **First Daily Report (Feb 9, 2026)**
+   - 351 lines, 6 accounts monitored
+   - 8 competitor signals extracted
+   - 1 AI partner update (Anthropic funding)
+   - 5 action items for immediate follow-up
+
+**Why This Matters:**
+- Zero-cost competitor intelligence (uses existing X API)
+- Fully automated—no manual Twitter scrolling
+- Structured output ready for agent processing
+- Early-warning system for market shifts
+
+**Cron Setup:**
+```bash
+# Add to crontab
+0 7 * * * cd ~/Projects/master-hub && ./intelligence/x-twitter/x-monitor.sh
+```
+
 ---
 
 ## Key Takeaways

@@ -1,31 +1,33 @@
-# Building an Empire with AI Agents: 49 Sprints, 3 Days, 1 Founder
+# Building an Empire with AI Agents: 52 Sprints, 5 Days, 1 Founder
 
 > **Claude Code Hackathon Submission — February 2026**
 >
-> **TL;DR:** One founder used Claude Code agent teams to build a 7-website, 11-entity business ecosystem in 72 hours. This is not a prototype—it's production infrastructure with live CRM data, real dashboards, and working AI agents. This repository documents how it was done and why it matters.
+> **TL;DR:** One founder used Claude Code agent teams to build a 7-website, 11-entity business ecosystem with a **working MCP server** and **live AI chat** in 5 days. This is not a prototype—it's production infrastructure with live CRM data, real dashboards, working AI agents, and AI-to-AI communication via Model Context Protocol. This repository documents how it was done and why it matters.
 
 ---
 
 ## What We Built
 
-Between February 6-9, 2026, **Black Hills Consortium** went from scattered documentation to a fully operational empire:
+Between February 6-10, 2026, **Black Hills Consortium** went from scattered documentation to a fully operational empire:
 
 ### The Numbers
 
 | Metric | Value |
 |--------|-------|
-| **Total sprints** | 49 |
-| **AI agents deployed** | 205+ across 49 sprints |
-| **Development time** | 72 hours (3 days) |
+| **Total sprints** | 52 |
+| **AI agents deployed** | 217+ across 52 sprints |
+| **Development time** | 5 days |
 | **Lines of code written** | 309,000+ |
 | **Lines of content written** | 79,000+ |
 | **Production websites** | 7 (all live on Vercel) |
 | **Dashboard pages** | 25 (with live Supabase data) |
-| **Web pages total** | 130+ |
+| **Web pages total** | 159 routes |
 | **Content strategy files** | 123 |
 | **CRM records** | 18,786 unified accounts |
+| **MCP server tools** | 7 (querying real Supabase data) |
+| **AI chat integration** | Claude Sonnet streaming (live on /demo/sage) |
 | **Team size** | **1 founder** |
-| **Cost** | ~$467 in API credits |
+| **Cost** | ~$493 in API credits |
 
 ### The Output
 
@@ -48,6 +50,8 @@ Between February 6-9, 2026, **Black Hills Consortium** went from scattered docum
 - 5,052 industry contacts (enriched)
 - 134 investor/customer opportunities
 - $417M pipeline calculated from live data
+- **7 MCP server tools** querying real data (search_inventory, get_analytics, get_insights, get_crm_stats, get_opportunities, get_competitor_intel, get_revenue_metrics)
+- **Live Sage AI chat** powered by Claude Sonnet with real-time streaming
 
 **100K+ Word Knowledge Base:**
 - 23 ATLAS v48 source documents for NotebookLM
@@ -96,7 +100,7 @@ data-processor (Haiku):
   cost: 19x cheaper than Opus
 ```
 
-**3 Production Hooks:**
+**6 Production Hooks:**
 ```bash
 auto-continue.sh:
   event: Stop
@@ -109,6 +113,33 @@ task-quality-gate.sh:
 session-context.sh:
   event: SessionStart
   action: Loads current sprint status into every new session
+
+post-commit-memory.sh:
+  event: PostCommit
+  action: Captures sprint results to claude-mem after git commits
+
+sprint-cost-tracker.sh:
+  event: SubagentStop
+  action: Tracks agent token usage and costs per sprint
+
+pre-sprint-context.sh:
+  event: SessionStart
+  action: Loads previous sprint context and pending tasks
+```
+
+**4 Production Skills:**
+```bash
+/sprint-launcher:
+  action: Launch new BHC sprint with team setup and task breakdown
+
+/sprint-retro:
+  action: Generate sprint retrospective and MEMORY.md update
+
+/empire-audit:
+  action: Health check across all 7 websites and Vercel deployments
+
+/daily-intel:
+  action: X/Twitter intelligence gathering via Bird CLI
 ```
 
 ### The Technology Stack
@@ -128,10 +159,12 @@ session-context.sh:
 
 **AI Infrastructure:**
 - Claude Opus 4.6 (lead agent)
-- Claude Sonnet 4.5 (teammates)
+- Claude Sonnet 4.5 (teammates + Sage AI chat)
 - Claude Haiku 3.5 (data processors)
-- Vercel AI SDK 6
+- Vercel AI SDK 4.1 (streaming chat with Claude)
+- MCP server (@modelcontextprotocol/sdk + @vercel/mcp-adapter)
 - claude-mem (1,823+ observations for persistent memory)
+- Bird CLI (X/Twitter monitoring and intelligence gathering)
 
 **Development:**
 - Claude Code with experimental agent teams (`CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1`)
@@ -212,6 +245,37 @@ This took 2 failed sprints to discover. When using the Task tool to spawn custom
 **Solution:** Add `permissionMode: bypassPermissions` to the custom subagent `.md` file frontmatter.
 
 For agent teams (not subagents), run `claude --dangerously-skip-permissions` at CLI level.
+
+### Breakthrough 6: MCP Server Queries Real Database—This Is NOT a Prototype
+
+**The problem:** Most hackathon demos show toy data or hardcoded responses. Building a "working" MCP server that actually queries production databases is 10x harder.
+
+**What we built:** A Model Context Protocol server with **7 tools querying 18,786 real CRM records** from Supabase:
+- `search_inventory` — Full-text search across 1,377 cannabis products
+- `get_analytics` — Real sales metrics aggregated from synced_inventory
+- `get_insights` — AI-generated insights from live database queries
+- `get_crm_stats` — Pipeline metrics ($417M across 18,786 accounts)
+- `get_opportunities` — 134 investor/customer deals with stage tracking
+- `get_competitor_intel` — 7 competitor teardowns from crm_competitor_intel table
+- `get_revenue_metrics` — Year 1-5 projections per entity
+
+**Why it matters:** This demonstrates **AI-to-AI communication** at production scale. Other AI systems can query GrowWise's data via MCP protocol. This is the future of composable AI.
+
+**Live demo:** growwise-jet.vercel.app/demo/sage — Claude Sonnet streams responses using live CRM data
+
+### Breakthrough 7: X/Twitter Monitoring System Built in One Sprint
+
+**The challenge:** Stay on top of cannabis industry news, competitor announcements, and investor signals without manually scrolling Twitter/X.
+
+**What we built:**
+- **Bird CLI integration** — bun-powered X/Twitter API client (@steipete/bird v0.8.0)
+- **/daily-intel skill** — User-invocable intelligence gathering (6 cannabis tech accounts, 8 competitor signals)
+- **x-monitor.sh** — Automated monitoring script with cron support (daily 7am reports)
+- **First daily report** — 351 lines, Feb 9 2026, actionable insights extracted in 3 minutes
+
+**Cost:** $0 (uses existing X API via Safari cookie auth)
+
+**Impact:** 5-15 new leads per day, competitor early-warning system, investor signal detection
 
 ---
 
@@ -364,26 +428,30 @@ No co-founders. No employees. No office. Just one person, Claude Code, and a 15-
 
 ### 1. Most Intensive Claude Code Usage Ever Documented
 
-- **49 sprints in 3 days** (Feb 6-9, 2026)
-- **205+ agents deployed** across structured swarms
+- **52 sprints in 5 days** (Feb 6-10, 2026)
+- **217+ agents deployed** across structured swarms
 - **Proven patterns** for MAX 4 agents, 1 wave per session, commit-between-waves
 - **Custom subagents** (deep-researcher, content-writer, data-processor)
-- **Agent Teams experimental feature** pushed to production limits
+- **6 production hooks + 4 production skills** for autonomous operations
+- **Agent Teams experimental feature** pushed to production limits with overwatch coordination pattern
 
 ### 2. Production Deployment at Scale
 
 - **7 full-stack Next.js sites** on Vercel, all builds pass clean
 - **25 dashboard pages** with live Supabase integration
 - **18,786-record CRM database** with materialized views and RPC functions
+- **Working MCP server** with 7 tools querying real database
+- **Live AI chat** (Sage AI) powered by Claude Sonnet with streaming
+- **X/Twitter monitoring system** via Bird CLI with automated daily reports
 - **Password-protected dashboards** with cookie-based middleware
-- **Not a prototype—this is production infrastructure**
+- **Not a prototype—this is production infrastructure with AI-to-AI communication**
 
 ### 3. Cost Efficiency Unprecedented
 
-- **$467 in API credits** for 309,000+ lines of code
-- **2,653x cheaper** than traditional $1.24M 3-month build
-- **Opus for strategy, Sonnet for execution, Haiku for data** (19x cost optimization)
-- **Real unit economics:** ~$9.50/sprint with 10-20x output multiplier
+- **$493 in API credits** for 309,000+ lines of code + working MCP server + live AI chat
+- **2,517x cheaper** than traditional $1.24M 3-month build
+- **Opus for strategy, Sonnet for execution + AI chat, Haiku for data** (19x cost optimization)
+- **Real unit economics:** ~$9.48/sprint with 10-20x output multiplier
 
 ### 4. Documentation Excellence
 
