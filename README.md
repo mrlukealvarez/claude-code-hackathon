@@ -156,7 +156,7 @@ auto-memory-update.sh:
 ### The Technology Stack
 
 **Frontend:**
-- Next.js 15, React 19, TypeScript
+- Next.js 16, React 19, TypeScript
 - Tailwind CSS, Shadcn/ui components
 - Recharts for dashboards
 - Framer Motion for animations
@@ -172,7 +172,7 @@ auto-memory-update.sh:
 - Claude Opus 4.6 (lead agent)
 - Claude Sonnet 4.5 (teammates + Sage AI chat)
 - Claude Haiku 3.5 (data processors)
-- Vercel AI SDK 4.1 (streaming chat with Claude)
+- Vercel AI SDK 6 (streaming chat with Claude)
 - MCP server (@modelcontextprotocol/sdk + @vercel/mcp-adapter)
 - claude-mem (1,823+ observations for persistent memory)
 - Bird CLI (X/Twitter monitoring and intelligence gathering)
@@ -415,7 +415,7 @@ This is not about replacing humans. This is about **multiplying human capability
 
 ```
 Black Hills Consortium (501c6 coordination layer)
-├── GrowWise (Cannabis SaaS) — $394.5M Y1 → $1.05B Y5
+├── GrowWise (Cannabis SaaS) — $394.5M Y1 → $1.65B Y5
 ├── Outpost Media (9-channel media network) — $1.2M Y1
 ├── Seed Foundation (AI education nonprofit) — $1.5M Y1
 ├── THE OP Cafe (community gathering space) — $600K Y1
@@ -488,7 +488,7 @@ No co-founders. No employees. No office. Just one person, Claude Code, and a 15-
 ### 5. Real-World Impact Potential
 
 - **$52M capital raise** for 11-entity consortium
-- **GrowWise targets $1.05B ARR** by displacing Dutchie in cannabis POS market
+- **GrowWise targets $1.65B ARR** by displacing Dutchie in cannabis POS market
 - **Settle the West aims to relocate 5,000 workers** to 9 partner towns over 10 years
 - **$595M+ 10-year economic impact** across Black Hills region
 

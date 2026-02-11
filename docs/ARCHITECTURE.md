@@ -8,7 +8,7 @@
 
 Black Hills Consortium built 7 production websites, 25 dashboards, and a 18,786-record CRM in 72 hours using **AI agent swarms**—not a single massive context window, but coordinated teams of specialized agents working in parallel.
 
-This document explains how it works, what constraints matter, and what patterns emerged as reliable after 49 sprints.
+This document explains how it works, what constraints matter, and what patterns emerged as reliable after 58 sprints.
 
 ---
 
@@ -108,7 +108,7 @@ speed: 60 seconds for pure SQL, 8 minutes for batch REST API updates
 
 ---
 
-## Proven Patterns (After 49 Sprints)
+## Proven Patterns (After 58 Sprints)
 
 ### Pattern 1: MAX 4 Agents Per Session
 
@@ -190,7 +190,7 @@ git commit -m "Sprint 42: BHC dashboard + P&L dashboards + permission fix
 3. Build status + deploy status
 
 **Evidence:**
-- 49 sprints, 49 commits, zero lost work across 72 hours
+- 58 sprints, 58 commits, zero lost work across 120 hours
 
 ### Pattern 4: Pure SQL Agents = 60 Seconds
 
@@ -324,23 +324,23 @@ Fully self-contained with file paths, style references, and success criteria.
 | Data Processor | Haiku 3.5 | 50K in / 20K out | $0.12 | 1 | $0.12 |
 | **Total per sprint** | | | | | **$9.72** |
 
-### 49-Sprint Total
+### 58-Sprint Total
 
-**Total API cost across 49 sprints:** ~$476
+**Total API cost across 58 sprints:** ~$520
 
-**Cost per line of code:** $0.0015 (309,000 lines / $476)
+**Cost per line of code:** $0.0017 (309,000 lines / $520)
 
-**Cost per content line:** $0.006 (79,000 lines / $476)
+**Cost per content line:** $0.0066 (79,000 lines / $520)
 
 ### Why This Is Cheap
 
 **Traditional hiring (3 months):**
 - 23 people × 60 days × $900/day avg = $1,242,000
 
-**BHC AI-native (3 days):**
-- $476 in API costs
+**BHC AI-native (5 days):**
+- $520 in API costs
 
-**Cost efficiency: 2,609x cheaper**
+**Cost efficiency: 2,385x cheaper**
 
 ### Optimization Strategies
 
@@ -547,7 +547,7 @@ const server = new Server({ name: 'growwise', version: '1.0.0' }, { capabilities
 
 7. **get_revenue_metrics**
    - Year 1-5 financial projections per entity
-   - GrowWise: $10.5M Y1 → $105M Y5
+   - GrowWise: $394.5M Y1 → $1.05B Y5
    - Returns: 11-entity revenue breakdown + aggregate totals
 
 **Why This Matters:**
@@ -651,7 +651,7 @@ bird get:timeline --count 100 --type tweets
 
 ## Key Takeaways
 
-1. **4 agents is the Goldilocks number** — Proven across 49 sprints
+1. **4 agents is the Goldilocks number** — Proven across 58 sprints
 2. **1 wave per session** — Context degrades across waves
 3. **Git commit between sprints** — Zero work lost in 72 hours
 4. **Sonnet for content (5x cheaper), Haiku for data (19x cheaper)** — Cost optimization without quality loss
